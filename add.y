@@ -1,22 +1,38 @@
 %{
 #include<stdio.h>
 #include<ctype.h>
-#include<math.h>
 
+#include<math.h>
+int d;
+int d1;
 %}
-%token NUM
+
+%union
+{
+	float n;
+}
+%type <n> E
+%token <n> FLOAT
 %left '+' '-' 
+
 %left '*' '/'
-%left '%'
+%left '&'
+%left 't'
+%token TAN
+//%left '%'
 
 %%
-A:E {printf("%d",$1);}; 
+A:E {printf("%f\n",$1);}; 
 E: E '+' E {$$= $1 + $3 ;}
 | E '-' E {$$=$1 - $3;}
 | E '*' E {$$=$1 * $3;}
 | E '/' E {$$=$1 / $3;}
-| E '%' E {$$=$1 % $3;}
-|NUM {$$=$1 ;};
+
+| '&' E {$$=sin($2*3.14/180);}
+|  't' E {$$tan($2*3.14/180);}
+//| E '%' E {$$=$1 % $3;}
+
+|FLOAT {$$=$1 ;};
 
 
 %%
@@ -30,8 +46,8 @@ yylex()
 		if(isdigit(c))
 		{
 			ungetc(c,stdin);
-			scanf("%d",&yylval);
-			return NUM;
+			scanf("%f",&yylval);
+			return FLOAT;
 		
 		}
 		return c;
@@ -46,5 +62,5 @@ int main()
 
 
 
-int yyerror(){printf("e");}
+int yyerror(){}
 
